@@ -36,10 +36,21 @@ virt-check
 
 # Detect kernel version
 function kernel-version() {
-  if ! [ -x "$(command -v uname -r)" ]; then
-    uname -r
+version_over_4_1(){
+    return $(uname -r | awk -F '.' '{
+        if ($1 < 4) { print 1; }
+        else if ($1 == 4) {
+            if ($2 <= 1) { print 1; }
+            else { print 0; }
+        }
+        else { print 0; }
+    }')
+}
+if version_over_4_1
+then
+else
     exit
-  fi
+fi
 }
 
 # Check kernel version
